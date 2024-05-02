@@ -55,7 +55,7 @@ public:
 };
 
 /// This function saves the sprite sheet with random colors filling the frames
-export bool save_sheet_debug(const string& filename, const rect_wh& canvas_size, const std::vector<rect_type>& frames) {
+export void save_sheet_debug(const string& filename, const rect_wh& canvas_size, const std::vector<rect_type>& frames) {
 	// Create an empty canvas
 	Image canvas(canvas_size.w, canvas_size.h);
 
@@ -74,6 +74,4 @@ export bool save_sheet_debug(const string& filename, const rect_wh& canvas_size,
 
 	// Save the canvas
 	canvas.save(filename);
-
-	return true;
 }
