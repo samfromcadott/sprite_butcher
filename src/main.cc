@@ -2,6 +2,7 @@
 #include "finders_interface.h"
 
 import packing;
+import image;
 
 using namespace rectpack2D;
 
@@ -24,6 +25,8 @@ int main() {
 	for (const auto& r : output) {
 		std::cout << r.x << " " << r.y << " " << r.w << " " << r.h << std::endl;
 	}
+
+	save_sheet_debug("test.png", size, output);
 
 	return 0;
 }

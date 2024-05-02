@@ -8,11 +8,12 @@ set(source_code
 )
 
 include_directories(thirdparty/rectpack2D/src)
+include_directories(thirdparty/lodepng)
 
 add_executable(sprite_packer ${source_code})
 
 target_sources(sprite_packer
 	PUBLIC
 	FILE_SET cxx_modules TYPE CXX_MODULES
-	FILES src/packing.cc
+	FILES src/packing.cc src/image.cc thirdparty/lodepng/lodepng.cpp
 )
