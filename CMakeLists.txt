@@ -10,3 +10,9 @@ set(source_code
 include_directories(thirdparty/rectpack2D/src)
 
 add_executable(sprite_packer ${source_code})
+
+target_sources(sprite_packer
+	PUBLIC
+	FILE_SET cxx_modules TYPE CXX_MODULES
+	FILES src/packing.cc
+)
