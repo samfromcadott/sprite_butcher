@@ -18,6 +18,8 @@ int main(int argc, char** argv) {
 	string input_path, output_path;
 
 	cli.add_option("-i,--input", input_path, "Input frame directory")->required();
+	cli.add_option("-o,--output", output_path, "Output sprite sheet path")->required();
+
 	CLI11_PARSE(cli, argc, argv);
 
 	// List files in the sample directory
@@ -43,7 +45,7 @@ int main(int argc, char** argv) {
 		std::cout << r.x << " " << r.y << " " << r.w << " " << r.h << std::endl;
 	}
 
-	save_sheet_debug("test.png", size, output);
+	save_sheet_debug(output_path, size, output);
 
 	return 0;
 }
