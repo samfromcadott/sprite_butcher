@@ -31,6 +31,9 @@ public:
 		this->height = height;
 	}
 
+	size_t get_width() const { return width; }
+	size_t get_height() const { return height; }
+
 	// Setter
 	Color& operator()(const size_t x, const size_t y) {
 		return pixels[ width * y + x ];
@@ -40,7 +43,7 @@ public:
 		return pixels[ width * y + x ];
 	}
 
-	void save(const string& filename) {
+	void save(const string& filename) const {
 		vector<unsigned char> image;
 
 		for (auto pixel : pixels) {

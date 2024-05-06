@@ -22,28 +22,23 @@ int main(int argc, char** argv) {
 
 	CLI11_PARSE(cli, argc, argv);
 
-	// List files in the sample directory
-	for ( auto file : fs::directory_iterator(input_path) )
-		std::cout << file.path() << std::endl;
-
-	// Create an array of rectangles
+	// Load images from input_path
 	rect_array rectangles;
-
-	rectangles.emplace_back(rect_xywh(0, 0, 20, 40));
-	rectangles.emplace_back(rect_xywh(0, 0, 120, 40));
-	rectangles.emplace_back(rect_xywh(0, 0, 85, 59));
-	rectangles.emplace_back(rect_xywh(0, 0, 199, 380));
-	rectangles.emplace_back(rect_xywh(0, 0, 85, 875));
+	for ( auto file : fs::directory_iterator(input_path) ) {
+		Image image;
+		image.load( file.path().generic_string() ); // TODO: Ensure file is PNG
+		rectangles.push_back( rect_xywh(0, 0, image.get_width(), image.get_height()) );
+	}
 
 	// Find their packed size
 	auto [size, output] = pack_frames(rectangles);
 
 	// Display results
-	std::cout << "Resultant bin: " << size.w << " " << size.h << std::endl;
-
-	for (const auto& r : output) {
-		std::cout << r.x << " " << r.y << " " << r.w << " " << r.h << std::endl;
-	}
+	// std::cout << "Resultant bin: " << size.w << " " << size.h << std::endl;
+	//
+	// for (const auto& r : output) {
+	// 	std::cout << r.x << " " << r.y << " " << r.w << " " << r.h << std::endl;
+	// }
 
 	save_sheet_debug(output_path, size, output);
 

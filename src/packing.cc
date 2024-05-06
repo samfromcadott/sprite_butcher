@@ -1,3 +1,4 @@
+#include <iostream>
 #include "finders_interface.h"
 
 export module packing;
@@ -18,10 +19,12 @@ auto report_unsuccessful = [](rect_type&) {
 	return callback_result::ABORT_PACKING;
 };
 
-const auto max_side = 1000;
+// const auto max_side = 4000;
 const auto discard_step = -4;
 
-export std::tuple< rect_wh, std::vector<rect_type> > pack_frames(std::vector<rect_type> rectangles) {
+export std::tuple< rect_wh, rect_array > pack_frames(rect_array rectangles) {
+	const int max_side = sqrt( rectangles.size() ) * rectangles[0].w; // TODO: Find the largest side length in rectangles
+
 	const rect_wh canvas_size = find_best_packing<spaces_type>(
 		rectangles,
 		make_finder_input(
