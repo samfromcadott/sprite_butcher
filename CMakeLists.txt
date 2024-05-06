@@ -9,6 +9,7 @@ set(source_code
 
 include_directories(thirdparty/rectpack2D/src)
 include_directories(thirdparty/lodepng)
+include_directories(thirdparty/cli11/include)
 
 add_executable(sprite_packer ${source_code})
 

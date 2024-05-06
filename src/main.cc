@@ -1,12 +1,29 @@
 #include <iostream>
-#include "finders_interface.h"
+#include <filesystem>
+#include <finders_interface.h>
+#include <CLI/CLI.hpp>
 
 import packing;
 import image;
 
 using namespace rectpack2D;
+using namespace std;
+namespace fs = std::filesystem;
 
-int main() {
+int main(int argc, char** argv) {
+	// Command line options
+	CLI::App cli;
+	argv = cli.ensure_utf8(argv);
+
+	string input_path, output_path;
+
+	cli.add_option("-i,--input", input_path, "Input frame directory")->required();
+	CLI11_PARSE(cli, argc, argv);
+
+	// List files in the sample directory
+	for ( auto file : fs::directory_iterator(input_path) )
+		std::cout << file.path() << std::endl;
+
 	// Create an array of rectangles
 	rect_array rectangles;
 
