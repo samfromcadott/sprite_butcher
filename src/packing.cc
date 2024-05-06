@@ -5,7 +5,7 @@ export module packing;
 
 using namespace rectpack2D;
 
-constexpr bool allow_flip = true;
+constexpr bool allow_flip = false;
 const auto runtime_flipping_mode = flipping_option::ENABLED;
 export using spaces_type = rectpack2D::empty_spaces<allow_flip, default_empty_spaces>;
 export using rect_type = output_rect_t<spaces_type>;
@@ -23,7 +23,7 @@ auto report_unsuccessful = [](rect_type&) {
 const auto discard_step = -4;
 
 export std::tuple< rect_wh, rect_array > pack_frames(rect_array rectangles) {
-	const int max_side = sqrt( rectangles.size() ) * rectangles[0].w; // TODO: Find the largest side length in rectangles
+	const int max_side = sqrt( rectangles.size() ) * 600; // TODO: Find the largest side length in rectangles
 
 	const rect_wh canvas_size = find_best_packing<spaces_type>(
 		rectangles,

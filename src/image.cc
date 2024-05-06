@@ -1,5 +1,6 @@
 #include <string>
 #include <random>
+#include <iostream>
 #include <finders_interface.h>
 #include <lodepng.h>
 
@@ -22,6 +23,22 @@ export class Image {
 private:
 	vector<Color> pixels;
 	size_t width = 0, height = 0;
+
+	bool column_transparent(const size_t x) const {
+		for (size_t y = 0; y < height-1; y++) {
+			if ( (*this)(x, y).a != 0 ) return false;
+		}
+
+		return true;
+	}
+
+	bool row_transparent(const size_t y) const {
+		for (size_t x = 0; x < width-1; x++) {
+			if ( (*this)(x, y).a != 0 ) return false;
+		}
+
+		return true;
+	}
 
 public:
 	Image(){}
@@ -66,16 +83,53 @@ public:
 
 		width = w;
 		height = h;
+		pixels.resize(width * height);
 
 		for (size_t p = 0; p < width * height; p+=4) {
 			Color pixel = Color { image[p+0], image[p+1], image[p+2], image[p+3] };
-			pixels.push_back(pixel);
+			pixels[p] = pixel;
 		}
 	}
 
 	/// Crops the excess transparency from the image. Returns the origin and size of the crop.
 	rect_xywh crop() {
-		return rect_xywh(0, 0, 0, 0);
+		int first_x = 0, first_y = 0;
+		int last_x = width, last_y = height;
+
+		// X-axis crop
+		for (size_t x = 0; x < width-1; x++) {
+			// for (size_t y = 0; y < height-1; y++) {
+			// 	if ( (*this)(x, y).a == 0 ) continue;
+			// 	first_x = x;
+			// 	break;
+			// }
+			if ( column_transparent(x) ) continue;
+			first_x = x;
+			break;
+
+			// if (first_x > 0) break;
+		}
+
+		for (size_t x = width-1; x > 0; x--) {
+			if ( column_transparent(x) ) continue;
+			last_x = x;
+			break;
+		}
+
+		// Y-axis crop
+		for (size_t y = 0; y < height-1; y++) {
+			if ( row_transparent(y) ) continue;
+			first_y = y;
+			break;
+		}
+
+		for (size_t y = height-1; y > 0; y--) {
+			if ( row_transparent(y) ) continue;
+			last_y = y;
+			break;
+		}
+
+		return rect_xywh(first_x, first_y, last_x-first_x, last_y-first_y);
 	}
 };
 

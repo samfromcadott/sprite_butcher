@@ -23,14 +23,17 @@ int main(int argc, char** argv) {
 	CLI11_PARSE(cli, argc, argv);
 
 	// Load images from input_path
+	std::cout << "Loading images..." << '\n';
 	rect_array rectangles;
 	for ( auto file : fs::directory_iterator(input_path) ) {
 		Image image;
 		image.load( file.path().generic_string() ); // TODO: Ensure file is PNG
-		rectangles.push_back( rect_xywh(0, 0, image.get_width(), image.get_height()) );
+		// rectangles.push_back( rect_xywh(0, 0, image.get_width(), image.get_height()) );
+		rectangles.push_back( image.crop() );
 	}
 
 	// Find their packed size
+	std::cout << "Packing..." << '\n';
 	auto [size, output] = pack_frames(rectangles);
 
 	// Display results
@@ -40,7 +43,9 @@ int main(int argc, char** argv) {
 	// 	std::cout << r.x << " " << r.y << " " << r.w << " " << r.h << std::endl;
 	// }
 
+	std::cout << "Exporting..." << '\n';
 	save_sheet_debug(output_path, size, output);
+	std::cout << "Done." << '\n';
 
 	return 0;
 }
