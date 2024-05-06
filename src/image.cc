@@ -41,7 +41,7 @@ public:
 	}
 
 	void save(const string& filename) {
-		std::vector<unsigned char> image;
+		vector<unsigned char> image;
 
 		for (auto pixel : pixels) {
 			image.push_back(pixel.r);
@@ -52,9 +52,31 @@ public:
 
 		lodepng::encode(filename.c_str(), image, width, height);
 	}
+
+	void load(const string& filename) {
+		pixels.clear(); // Remove any previously created image
+
+		// Load an image file
+		vector<unsigned char> image;
+		unsigned int w, h;
+		lodepng::decode(image, w, h, filename);
+
+		width = w;
+		height = h;
+
+		for (size_t p = 0; p < width * height; p+=4) {
+			Color pixel = Color { image[p+0], image[p+1], image[p+2], image[p+3] };
+			pixels.push_back(pixel);
+		}
+	}
+
+	/// Crops the excess transparency from the image. Returns the origin and size of the crop.
+	rect_xywh crop() {
+		return rect_xywh(0, 0, 0, 0);
+	}
 };
 
-/// This function saves the sprite sheet with random colors filling the frames
+/// Saves the sprite sheet with random colors filling the frames
 export void save_sheet_debug(const string& filename, const rect_wh& canvas_size, const std::vector<rect_type>& frames) {
 	// Create an empty canvas
 	Image canvas(canvas_size.w, canvas_size.h);

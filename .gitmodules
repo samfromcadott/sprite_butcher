@@ -4,3 +4,6 @@
 [submodule "thirdparty/lodepng"]
 	path = thirdparty/lodepng
 	url = https://github.com/lvandeve/lodepng
+[submodule "thirdparty/cli11"]
+	path = thirdparty/cli11
+	url = https://github.com/CLIUtils/CLI11
