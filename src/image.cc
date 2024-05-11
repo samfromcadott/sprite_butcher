@@ -90,8 +90,9 @@ public:
 		height = h;
 		pixels.resize(width * height);
 
-		for (size_t p = 0; p < width * height; p+=4) {
-			Color pixel = Color { image[p+0], image[p+1], image[p+2], image[p+3] };
+		for (size_t p = 0; p < width * height; p++) {
+			size_t q = p * 4; // Each component is a separateitem in the `image` vector
+			Color pixel = Color { image[q+0], image[q+1], image[q+2], image[q+3] };
 			pixels[p] = pixel;
 		}
 	}
@@ -103,15 +104,6 @@ public:
 
 		// X-axis crop
 		for (size_t x = 0; x < width-1; x++) {
-			// for (size_t y = 0; y < height-1; y++) {
-			// 	if ( (*this)(x, y).a == 0 ) continue;
-			// 	first_x = x;
-			// 	break;
-			// }
-			// first_x = x;
-			// break;
-
-			// if (first_x > 0) break;
 			if ( column_transparent(x) ) continue;
 			first_x = x;
 			break;
@@ -157,6 +149,30 @@ export void save_sheet_debug(const string& filename, const rect_wh& canvas_size,
 		for (int x = frame.x; x < frame.x + frame.w; x++)
 		for (int y = frame.y; y < frame.y + frame.h; y++) {
 			canvas(x, y) = color;
+		}
+	}
+
+	// Save the canvas
+	canvas.save(filename);
+}
+
+/// Saves the sprite sheet
+export void save_sheet(const string& filename, const rect_wh& canvas_size, const std::vector<Image>& frames, const std::vector<rect_type>& rectangles) {
+	// Create an empty canvas
+	Image canvas(canvas_size.w, canvas_size.h);
+
+	// For each frame copy it onto the canvas
+	for (size_t i = 0; i < frames.size(); i++) {
+		rect_xywh crop_area = frames[i].crop_area;
+		rect_xywh dest = rectangles[i]; // Destination of the frame
+
+		// Copy pixels from each frame into its packed rectangle
+		for (size_t x = crop_area.x; x < crop_area.x + crop_area.w; x++)
+		for (size_t y = crop_area.y; y < crop_area.y + crop_area.h; y++) {
+			auto dx = dest.x + x - crop_area.x;
+			auto dy = dest.y + y - crop_area.y;
+
+			canvas(dx, dy) = frames[i](x, y);
 		}
 	}
 

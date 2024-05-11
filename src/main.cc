@@ -26,7 +26,7 @@ int main(int argc, char** argv) {
 	std::cout << "Loading images..." << '\n';
 	vector<Image> images;
 
-	for ( auto file : fs::directory_iterator(input_path) ) {
+	for ( auto& file : fs::directory_iterator(input_path) ) {
 		auto filename = file.path().generic_string();
 		images.push_back( Image(filename) );
 	}
@@ -35,7 +35,7 @@ int main(int argc, char** argv) {
 	std::cout << "Cropping..." << '\n';
 	rect_array rectangles;
 
-	for (auto image : images) {
+	for (auto& image : images) {
 		rectangles.push_back( image.crop() );
 	}
 
@@ -51,8 +51,12 @@ int main(int argc, char** argv) {
 	// 	std::cout << r.x << " " << r.y << " " << r.w << " " << r.h << std::endl;
 	// }
 
+	// Export the sprite sheet
 	std::cout << "Exporting..." << '\n';
-	save_sheet_debug(output_path, size, output);
+
+	// save_sheet_debug(output_path, size, output);
+	save_sheet(output_path, size, images, output);
+
 	std::cout << "Done." << '\n';
 
 	return 0;
