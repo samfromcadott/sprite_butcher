@@ -24,13 +24,21 @@ int main(int argc, char** argv) {
 
 	// Load images from input_path
 	std::cout << "Loading images..." << '\n';
-	rect_array rectangles;
+	vector<Image> images;
+
 	for ( auto file : fs::directory_iterator(input_path) ) {
-		Image image;
-		image.load( file.path().generic_string() ); // TODO: Ensure file is PNG
-		// rectangles.push_back( rect_xywh(0, 0, image.get_width(), image.get_height()) );
+		auto filename = file.path().generic_string();
+		images.push_back( Image(filename) );
+	}
+
+	// Crop transparent area from images
+	std::cout << "Cropping..." << '\n';
+	rect_array rectangles;
+
+	for (auto image : images) {
 		rectangles.push_back( image.crop() );
 	}
+
 
 	// Find their packed size
 	std::cout << "Packing..." << '\n';

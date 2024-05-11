@@ -26,7 +26,7 @@ private:
 
 	bool column_transparent(const size_t x) const {
 		for (size_t y = 0; y < height-1; y++) {
-			if ( (*this)(x, y).a != 0 ) return false;
+			if ( (*this)(x, y).a > 0 ) return false;
 		}
 
 		return true;
@@ -34,18 +34,23 @@ private:
 
 	bool row_transparent(const size_t y) const {
 		for (size_t x = 0; x < width-1; x++) {
-			if ( (*this)(x, y).a != 0 ) return false;
+			if ( (*this)(x, y).a > 0 ) return false;
 		}
 
 		return true;
 	}
 
 public:
+	rect_xywh crop_area;
+
 	Image(){}
 	Image(const size_t width, const size_t height) {
 		pixels.resize(width * height);
 		this->width = width;
 		this->height = height;
+	}
+	Image(const string& filename) {
+		load(filename);
 	}
 
 	size_t get_width() const { return width; }
@@ -103,14 +108,16 @@ public:
 			// 	first_x = x;
 			// 	break;
 			// }
+			// first_x = x;
+			// break;
+
+			// if (first_x > 0) break;
 			if ( column_transparent(x) ) continue;
 			first_x = x;
 			break;
-
-			// if (first_x > 0) break;
 		}
 
-		for (size_t x = width-1; x > 0; x--) {
+		for (size_t x = width-1; x > first_x; x--) {
 			if ( column_transparent(x) ) continue;
 			last_x = x;
 			break;
@@ -123,13 +130,15 @@ public:
 			break;
 		}
 
-		for (size_t y = height-1; y > 0; y--) {
+		for (size_t y = height-1; y > first_y; y--) {
 			if ( row_transparent(y) ) continue;
 			last_y = y;
 			break;
 		}
 
-		return rect_xywh(first_x, first_y, last_x-first_x, last_y-first_y);
+		crop_area = rect_xywh(first_x, first_y, last_x-first_x, last_y-first_y);
+
+		return crop_area;
 	}
 };
 
