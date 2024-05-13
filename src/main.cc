@@ -39,23 +39,35 @@ int main(int argc, char** argv) {
 		rectangles.push_back( image.crop() );
 	}
 
-
 	// Find their packed size
 	std::cout << "Packing..." << '\n';
-	auto [size, output] = pack_frames(rectangles);
-
-	// Display results
-	// std::cout << "Resultant bin: " << size.w << " " << size.h << std::endl;
-	//
-	// for (const auto& r : output) {
-	// 	std::cout << r.x << " " << r.y << " " << r.w << " " << r.h << std::endl;
-	// }
+	auto [size, output_rects] = pack_frames(rectangles);
 
 	// Export the sprite sheet
 	std::cout << "Exporting..." << '\n';
 
 	// save_sheet_debug(output_path, size, output);
-	save_sheet(output_path, size, images, output);
+	save_sheet(output_path, size, images, output_rects);
+
+	// Write a TSV file with the frame data
+	std::cout << "Writing data sheet..." << '\n';
+
+	ofstream data_sheet;
+	data_sheet.open(output_path + ".tsv");
+	data_sheet << "X\tY\tWIDTH\tHEIGHT\tCROP X\tCROP Y\n";
+
+	for (size_t i = 0; i < images.size(); i++) {
+		auto crop_area = images[i].crop_area;
+		auto rect = output_rects[i];
+
+		data_sheet <<
+			rect.x << "\t" <<
+			rect.y << "\t" <<
+			rect.w << "\t" <<
+			rect.h << "\t" <<
+			crop_area.x << "\t" <<
+			crop_area.y << "\n";
+	}
 
 	std::cout << "Done." << '\n';
 

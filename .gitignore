@@ -2,3 +2,4 @@ build
 
 *.png
 !sample/*.png
+*.tsv
