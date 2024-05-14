@@ -3,12 +3,17 @@
 #include <fstream>
 #include <sstream>
 #include <iostream>
+#include <map>
 #include <raylib.h>
 
 using namespace std;
 
 struct SpriteFrame {
 	uint16_t x, y, w, h, crop_x, crop_y;
+};
+
+struct Action {
+	uint16_t start, end;
 };
 
 vector<SpriteFrame> load_sprite_data(const string& filename) {
@@ -71,13 +76,26 @@ int main() {
 
 	SetTargetFPS(60);
 
+	// Load the srite sheet and frame data
 	Texture2D sprite_sheet = LoadTexture("sample.png");
 	auto frame_data = load_sprite_data("sample.png.tsv");
+
+	// Animation action data
+	map<string, Action> action;
+	string current_action = "idle";
+
+	action["idle"] = Action {0, 20};
+	action["walk"] = Action {21, 35};
+	action["die"] = Action {36, 78};
+	action["attack"] = Action {79, 88};
+	action["fall"] = Action {89, 89};
+	action["bitten"] = Action {90, 90};
+	action["stun"] = Action {91, 91};
 
 	while ( !WindowShouldClose() ) {
 		// Find the current frame
 		int frame = frame_rate * GetTime();
-		frame %= frame_data.size();
+		frame = frame % (action[current_action].end - action[current_action].start + 1) + action[current_action].start;
 
 		BeginDrawing();
 
