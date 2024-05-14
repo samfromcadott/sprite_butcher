@@ -92,7 +92,16 @@ int main() {
 	action["bitten"] = Action {90, 90};
 	action["stun"] = Action {91, 91};
 
+	// Action cycling
+	vector<string> action_list = {"idle", "walk", "die", "attack", "fall", "bitten", "stun"};
+	int action_index = 0;
+
 	while ( !WindowShouldClose() ) {
+		if ( IsKeyPressed(KEY_SPACE) ) {
+			action_index = (action_index + 1) % action_list.size();
+			current_action = action_list[action_index];
+		}
+
 		// Find the current frame
 		int frame = frame_rate * GetTime();
 		frame = frame % (action[current_action].end - action[current_action].start + 1) + action[current_action].start;
@@ -101,6 +110,8 @@ int main() {
 
 			ClearBackground(RAYWHITE);
 			render_frame(sprite_sheet, Vector2 {0, 0}, frame_data[frame]);
+			DrawText("PRESS SPACE TO CHANGE ACTION", 10, screen_height - 18, 8, LIGHTGRAY);
+			DrawText(current_action.c_str(), 10, 10, 20, BLACK);
 
 		EndDrawing();
 	}
