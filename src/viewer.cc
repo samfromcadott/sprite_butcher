@@ -50,8 +50,16 @@ vector<SpriteFrame> load_sprite_data(const string& filename) {
 	return frames;
 }
 
-void render_frame(Texture2D& sprite, const Vector2 position, const Frame& frame) {
+void render_frame(Texture2D& sprite, const Vector2 position, const SpriteFrame& frame) {
+	Rectangle rect = Rectangle {
+		static_cast<float>(frame.x),
+		static_cast<float>(frame.y),
+		static_cast<float>(frame.w),
+		static_cast<float>(frame.h)
+	};
+	Vector2 p = Vector2 {position.x + static_cast<float>(frame.crop_x), position.y + static_cast<float>(frame.crop_y)};
 
+	DrawTextureRec(sprite, rect, p, WHITE);
 }
 
 int main() {
@@ -70,7 +78,7 @@ int main() {
 
 		ClearBackground(RAYWHITE);
 
-		DrawText("Congrats! You created your first window!", 190, 200, 20, LIGHTGRAY);
+		render_frame(sprite_sheet, Vector2 {0, 0}, frame_data[50]);
 
 		EndDrawing();
 	}
