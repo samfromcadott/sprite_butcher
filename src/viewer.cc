@@ -65,6 +65,7 @@ void render_frame(Texture2D& sprite, const Vector2 position, const SpriteFrame& 
 int main() {
 	const int screen_width = 600;
 	const int screen_height = 512;
+	const int frame_rate = 12; // Frame rate used for sprite animation
 
 	InitWindow(screen_width, screen_height, "Sprite Sheet Viewer");
 
@@ -74,11 +75,14 @@ int main() {
 	auto frame_data = load_sprite_data("sample.png.tsv");
 
 	while ( !WindowShouldClose() ) {
+		// Find the current frame
+		int frame = frame_rate * GetTime();
+		frame %= frame_data.size();
+
 		BeginDrawing();
 
-		ClearBackground(RAYWHITE);
-
-		render_frame(sprite_sheet, Vector2 {0, 0}, frame_data[50]);
+			ClearBackground(RAYWHITE);
+			render_frame(sprite_sheet, Vector2 {0, 0}, frame_data[frame]);
 
 		EndDrawing();
 	}
